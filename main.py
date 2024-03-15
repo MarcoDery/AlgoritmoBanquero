@@ -1,4 +1,5 @@
 import time
+import app
 
 necesarios_matriz = []
 asignados_matriz = []
@@ -13,16 +14,17 @@ def ingresar_datos_matriz_necesarios(matriz):
         for m in range(0, 3):
             while True:
                 try:
-                    numero = int(input(f"Inserta valor para la matriz necesarios en [{n}] [{m}]: "))
-                    print(f"Valor {numero} ingresado correctamente en [{n}][{m}]")
+                    numero = int(input(f"Inserta valor para la matriz C necesarios en [{n}] [{m}]: "))
                     fila.append(numero)
                     break
                 except ValueError:
                     print("Inserta un valor numérico.")
         matriz.append(fila)
-
+    
+    print("\nC, Recursos Necesarios")
     for n in matriz:
         print(n)
+
 def ingresar_datos_matriz_asignados(necesarios, asignados):
     for n in range(0, 4):
         fila = []
@@ -31,7 +33,6 @@ def ingresar_datos_matriz_asignados(necesarios, asignados):
                 try:
                     numero = int(input(f"Inserta valor para la matriz asignados en [{n}] [{m}]: "))
                     if numero <= necesarios[n][m]:
-                        print(f"Valor {numero} ingresado correctamente en [{n}][{m}]")
                         fila.append(numero)
                         break
                     else:
@@ -40,6 +41,7 @@ def ingresar_datos_matriz_asignados(necesarios, asignados):
                     print("Inserta un valor numérico.")
         asignados.append(fila)
 
+    print("\nA, Recursos Asignados")
     for n in asignados:
         print(n)
 
@@ -49,7 +51,6 @@ def ingresar_datos_matriz_existentes(matriz):
             try:
                 numero = int(input("Ingrese un valor para los recursos existentes: "))
                 if numero in range(0, 10):
-                    print("Valor guardado.")
                     matriz.append(numero)
                     break
                 else:
@@ -57,7 +58,7 @@ def ingresar_datos_matriz_existentes(matriz):
             except ValueError:
                 print("Ingresa un número numérico.")
 
-    print(f"Recursos existentes: {matriz}")
+    print(f"\nRecursos existentes: {matriz}")
 
 def ingresar_datos_matriz_disponibles(disponibles, existentes, asignados):
     for n in range(0, 3):
@@ -75,7 +76,7 @@ def ingresar_datos_matriz_disponibles(disponibles, existentes, asignados):
                     print(f"El valor ingresado {numero} es mayor que el valor existente en la posición [{n}].")
             except ValueError:
                 print("Inserta un valor numérico.")
-    print(f"Recursos disponibles: {disponibles}")
+    print(f"\nRecursos disponibles: {disponibles}")
 
 def ingresar_datos():
     ingresar_datos_matriz_necesarios(necesarios_matriz)
@@ -83,39 +84,6 @@ def ingresar_datos():
     ingresar_datos_matriz_existentes(existentes_matriz)
     ingresar_datos_matriz_disponibles(disponibles_matriz,existentes_matriz,asignados_matriz)
 
-def mostrar_datos_4x3(matriz):
-    for i, val in enumerate(matriz):
-        print(f"P{i} {val}")
-def mostrar_datos_1x3(matriz):
-    print(matriz)
-
-def necesarios_asignados(matriz1, matriz2):
-    matriz = []
-    for i in range(len(matriz1)):
-        fila = []
-        for j in range(len(matriz1[i])):
-            resultado = matriz1[i][j] - matriz2[i][j]
-            fila.append(resultado)
-        matriz.append(fila)
-    return matriz
-
-lista = []
-def resolver_banquero(a, c_a, disponibles):
-    while True:
-        fila_cumple_condicion = None
-        indice_fila = None
-        for i, fila in enumerate(c_a):
-            menor_o_igual = all(x <= y for x, y in zip(fila, disponibles))
-            if menor_o_igual:
-                fila_cumple_condicion = fila
-                indice_fila = i
-                break
-        if fila_cumple_condicion == None:
-            print("Ninguna fila cumple con la condición de ser menor o igual a A-C.")
-            break
-        else:
-            suma_fila = [x + y for x, y in zip(a[indice_fila], fila_cumple_condicion)]
-        #terminar código aquí
 def menu():
     contador = 0
     while True:
@@ -132,7 +100,7 @@ def menu():
 
             print("\n\n")
             ingresar_datos()
-            necesaros_asignados_matriz = necesarios_asignados(necesarios_matriz, asignados_matriz)
+            necesaros_asignados_matriz = app.necesarios_asignados(necesarios_matriz, asignados_matriz)
             contador += 1
 
         try:
@@ -149,26 +117,27 @@ def menu():
 
             if opc == 1:
                 print("\nNECESARIOS")
-                mostrar_datos_4x3(necesarios_matriz)
+                app.mostrar_datos_4x3(necesarios_matriz)
                 input("Presione enter para continuar.")
             elif opc == 2:
                 print("\nASIGNADOS")
-                mostrar_datos_4x3(asignados_matriz)
+                app.mostrar_datos_4x3(asignados_matriz)
                 input("Presione enter para continuar.")
             elif opc == 3:
                 print("\nEXISTENTES")
-                mostrar_datos_1x3(existentes_matriz)
+                app.mostrar_datos_1x3(existentes_matriz)
                 input("Presione enter para continuar.")
             elif opc == 4:
                 print("\nDISPONIBLES")
-                mostrar_datos_1x3(disponibles_matriz)
+                app.mostrar_datos_1x3(disponibles_matriz)
                 input("Presione enter para continuar.")
             elif opc == 5:
                 print("\nNECESARIOS - ASIGNADOS")
-                mostrar_datos_4x3(necesaros_asignados_matriz)
+                app.mostrar_datos_4x3(necesaros_asignados_matriz)
                 input("Presione enter para continuar.")
             elif opc == 6:
-                resolver_banquero(asignados_matriz,necesaros_asignados_matriz,disponibles_matriz)
+                app.banquero(disponibles_matriz, necesaros_asignados_matriz, asignados_matriz, necesarios_matriz)
+
             elif opc == 7:
                 break
             else:
